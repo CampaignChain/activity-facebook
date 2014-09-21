@@ -18,5 +18,8 @@
         "campaignchain/operation-facebook": "dev-master",
         "campaignchain/hook-due": "dev-master",
         "campaignchain/hook-assignee": "dev-master"
+    },
+    "autoload": {
+        "psr-4": { "CampaignChain\\Activity\\FacebookBundle\\": "" }
     }
 }
