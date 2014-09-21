@@ -1,0 +1,25 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+modules:
+    campaignchain-facebook-publish-status:
+        display_name: 'Publish Status'
+        channels:
+            - campaignchain/channel-facebook/campaignchain-facebook
+        routes:
+            new: campaignchain_activity_facebook_publish_status_new
+            edit: campaignchain_activity_facebook_publish_status_edit
+            edit_modal: campaignchain_activity_facebook_publish_status_edit_modal
+            edit_api: campaignchain_activity_facebook_publish_status_edit_api
+        hooks:
+            campaignchain-due: true
+            campaignchain-duration: false
+            campaignchain-budget: false
+            campaignchain-work: false
+            campaignchain-milestone: false
+            campaignchain-log: false
+            campaignchain-assignee: true

@@ -1,0 +1,13 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+parameters:
+
+services:
+    campaignchain.activity.facebook.form.type.publish_status:
+        class: CampaignChain\Activity\FacebookBundle\Form\Type\PublishStatusActivityType
+        arguments: [ @doctrine.orm.entity_manager, @service_container ]

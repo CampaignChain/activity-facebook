@@ -1,0 +1,22 @@
+{
+    "name": "campaignchain/activity-facebook",
+    "description": "Post a status message on the feed of a channel.",
+    "keywords": ["facebook","status"],
+    "type": "campaignchain-activity",
+    "homepage": "http://www.campaignchain.com",
+    "license": "Apache-2.0",
+    "authors": [
+        {
+            "name": "Sandro Groganz",
+            "email": "sandro@campaignchain.com"
+        }
+    ],
+    "require": {
+        "campaignchain/core": "dev-master",
+        "campaignchain/channel-facebook": "dev-master",
+        "campaignchain/location-facebook": "dev-master",
+        "campaignchain/operation-facebook": "dev-master",
+        "campaignchain/hook-due": "dev-master",
+        "campaignchain/hook-assignee": "dev-master"
+    }
+}

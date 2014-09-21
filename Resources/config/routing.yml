@@ -1,0 +1,24 @@
+# This file is part of the CampaignChain package.
+#
+# (c) Sandro Groganz <sandro@campaignchain.com>
+#
+# For the full copyright and license information, please view the LICENSE
+# file that was distributed with this source code.
+
+campaignchain_activity_facebook_publish_status_new:
+    pattern:  /activity/facebook/publish-status/new
+    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:new }
+
+campaignchain_activity_facebook_publish_status_edit:
+    pattern:  /activity/facebook/publish-status/{id}/edit
+    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:edit }
+
+campaignchain_activity_facebook_publish_status_edit_modal:
+    pattern:  /modal/activity/facebook/publish-status/{id}/edit
+    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editModal }
+
+campaignchain_activity_facebook_publish_status_edit_api:
+    pattern:  /api/v1/activity/facebook/publish-status/byactivity/{id}/edit
+    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editApi }
+    options:
+        expose: true
