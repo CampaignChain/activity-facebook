@@ -12,12 +12,12 @@
         }
     ],
     "require": {
-        "campaignchain/core": "dev-1.0.0-alpha.2",
-        "campaignchain/channel-facebook": "dev-1.0.0-alpha.2",
-        "campaignchain/location-facebook": "dev-1.0.0-alpha.2",
-        "campaignchain/operation-facebook": "dev-1.0.0-alpha.2",
-        "campaignchain/hook-due": "dev-1.0.0-alpha.2",
-        "campaignchain/hook-assignee": "dev-1.0.0-alpha.2"
+        "campaignchain/core": "1.0.0-alpha.2",
+        "campaignchain/channel-facebook": "1.0.0-alpha.2",
+        "campaignchain/location-facebook": "1.0.0-alpha.2",
+        "campaignchain/operation-facebook": "1.0.0-alpha.2",
+        "campaignchain/hook-due": "1.0.0-alpha.2",
+        "campaignchain/hook-assignee": "1.0.0-alpha.2"
     },
     "autoload": {
         "psr-4": { "CampaignChain\\Activity\\FacebookBundle\\": "" }
