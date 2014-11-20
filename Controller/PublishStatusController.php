@@ -134,6 +134,8 @@ class PublishStatusController extends Controller
                 'page_title' => 'New Facebook Status',
                 'page_secondary_title' => 'Campaign "'.$campaign->getName().'"',
                 'form' => $form->createView(),
+                'form_submit_label' => 'Save',
+                'form_cancel_route' => 'campaignchain_core_activities_new'
             ));
 
     }
@@ -208,6 +210,8 @@ class PublishStatusController extends Controller
                 'page_title' => 'Edit Facebook Status',
                 'page_secondary_title' => 'Campaign "'.$campaign->getName().'"',
                 'form' => $form->createView(),
+                'form_submit_label' => 'Save',
+                'form_cancel_route' => 'campaignchain_core_activities'
             ));
     }
 
