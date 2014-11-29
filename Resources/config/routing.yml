@@ -18,7 +18,7 @@ campaignchain_activity_facebook_publish_status_edit_modal:
     defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editModal }
 
 campaignchain_activity_facebook_publish_status_edit_api:
-    pattern:  /api/v1/activity/facebook/publish-status/byactivity/{id}/edit
+    pattern:  /api/private/activity/facebook/publish-status/byactivity/{id}/edit
     defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editApi }
     options:
         expose: true
