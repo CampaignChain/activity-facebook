@@ -21,5 +21,20 @@
     },
     "autoload": {
         "psr-4": { "CampaignChain\\Activity\\FacebookBundle\\": "" }
+    },
+    "extra": {
+        "campaignchain": {
+            "kernel": {
+                "classes": [
+                    "CampaignChain\\Activity\\FacebookBundle\\CampaignChainActivityFacebookBundle"
+                ],
+                "routing":
+                {
+                    "name": "campaignchain_activity_facebook",
+                    "resource": "@CampaignChainActivityFacebookBundle/Resources/config/routing.yml",
+                    "prefix": "/"
+                }
+            }
+        }
     }
 }
