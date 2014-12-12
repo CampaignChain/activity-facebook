@@ -12,7 +12,7 @@
         }
     ],
     "require": {
-        "campaignchain/core": "=>dev-1.0.0-alpha.4",
+        "campaignchain/core": ">=dev-1.0.0-alpha.4",
         "campaignchain/channel-facebook": ">=1.0.0-alpha.3",
         "campaignchain/location-facebook": ">=1.0.0-alpha.3",
         "campaignchain/operation-facebook": ">=dev-1.0.0-alpha.4",
