@@ -12,6 +12,10 @@ namespace CampaignChain\Activity\FacebookBundle\Controller;
 
 use CampaignChain\CoreBundle\Entity\Location;
 use CampaignChain\CoreBundle\Entity\Medium;
+use CampaignChain\Location\FacebookBundle\Entity\Page;
+use CampaignChain\Location\FacebookBundle\Entity\User;
+use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
+use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
@@ -33,6 +37,7 @@ class PublishStatusController extends Controller
         $wizard = $this->get('campaignchain.core.activity.wizard');
         $campaign = $wizard->getCampaign();
         $activity = $wizard->getActivity();
+        $location = $wizard->getLocation();
 
         $activity->setEqualsOperation(true);
 
@@ -40,6 +45,28 @@ class PublishStatusController extends Controller
         $activityType->setBundleName(self::BUNDLE_NAME);
         $activityType->setModuleIdentifier(self::MODULE_IDENTIFIER);
         $publishStatusOperation = new PublishStatusOperationType($this->getDoctrine()->getManager(), $this->get('service_container'));
+
+        // Check whether the status will be published on a User or Page stream.
+        $facebookLocation = $this->getDoctrine()
+            ->getRepository('CampaignChainLocationFacebookBundle:LocationBase')
+            ->findOneByLocation($location);
+
+        if (!$facebookLocation) {
+            throw new \Exception(
+                'No Facebook location found.'
+            );
+        }
+
+        if($facebookLocation instanceof User){
+            $status = new UserStatus();
+        } elseif($facebookLocation instanceof Page){
+            $status = new PageStatus();
+        }
+
+        $status->setFacebookLocation($facebookLocation);
+        $publishStatusOperation->setStatus($status);
+
+        // Assemble the activity form.
         $operationForms[] = array(
             'identifier' => self::OPERATION_IDENTIFIER,
             'form' => $publishStatusOperation,
@@ -77,13 +104,13 @@ class PublishStatusController extends Controller
                 'campaignchain-facebook-status'
             );
 
-            $location = new Location();
-            $location->setLocationModule($locationModule);
-            $location->setParent($activity->getLocation());
-            $location->setName($activity->getName());
-            $location->setStatus(Medium::STATUS_UNPUBLISHED);
-            $location->setOperation($operation);
-            $operation->addLocation($location);
+            $statusLocation = new Location();
+            $statusLocation->setLocationModule($locationModule);
+            $statusLocation->setParent($activity->getLocation());
+            $statusLocation->setName($activity->getName());
+            $statusLocation->setStatus(Medium::STATUS_UNPUBLISHED);
+            $statusLocation->setOperation($operation);
+            $operation->addLocation($statusLocation);
 
             // Get the status data from request.
             $status = $form->get(self::OPERATION_IDENTIFIER)->getData();
@@ -300,5 +327,39 @@ class PublishStatusController extends Controller
 
         $response = new Response($serializer->serialize($responseData, 'json'));
         return $response->setStatusCode(Response::HTTP_OK);
+    }
+
+    public function readAction(Request $request, $id){
+        $activityService = $this->get('campaignchain.core.activity');
+        $activity = $activityService->getActivity($id);
+        $campaign = $activity->getCampaign();
+
+        // Get the one operation.
+        $operation = $activityService->getOperation($id);
+        $operationService = $this->get('campaignchain.operation.facebook.status');
+        $status = $operationService->getStatusByOperation($operation);
+
+        $isPublic = true;
+
+        if($status->getPrivacy() != 'EVERYONE'){
+            // Check whether it is a protected tweet.
+            $isPublic = false;
+        }
+
+        if(!$isPublic){
+            $this->get('session')->getFlashBag()->add(
+                'warning',
+                'This post is not public.'
+            );
+        }
+
+        return $this->render(
+            'CampaignChainOperationFacebookBundle::read.html.twig',
+            array(
+                'page_title' => $activity->getName(),
+                'is_public' => $isPublic,
+                'status' => $status,
+                'activity' => $activity,
+            ));
     }
 }

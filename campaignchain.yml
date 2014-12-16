@@ -15,6 +15,7 @@ modules:
             edit: campaignchain_activity_facebook_publish_status_edit
             edit_modal: campaignchain_activity_facebook_publish_status_edit_modal
             edit_api: campaignchain_activity_facebook_publish_status_edit_api
+            read: campaignchain_activity_facebook_publish_status_read
         hooks:
             campaignchain-due: true
             campaignchain-duration: false

@@ -22,3 +22,7 @@ campaignchain_activity_facebook_publish_status_edit_api:
     defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editApi }
     options:
         expose: true
+
+campaignchain_activity_facebook_publish_status_read:
+    pattern:  /activity/facebook/publish-status/{id}
+    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:read }
