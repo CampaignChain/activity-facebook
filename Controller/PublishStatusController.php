@@ -70,7 +70,6 @@ class PublishStatusController extends Controller
         $operationForms[] = array(
             'identifier' => self::OPERATION_IDENTIFIER,
             'form' => $publishStatusOperation,
-            'label' => 'Facebook Message',
         );
         $activityType->setOperationForms($operationForms);
         $activityType->setCampaign($campaign);
