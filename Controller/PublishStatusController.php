@@ -312,7 +312,7 @@ class PublishStatusController extends Controller
         $repository->flush();
 
         $hookService = $this->get('campaignchain.core.hook');
-        $activity = $hookService->processHooks(self::BUNDLE_NAME, self::MODULE_IDENTIFIER, $activity, $data);
+        $hookService->processHooks(self::BUNDLE_NAME, self::MODULE_IDENTIFIER, $activity, $data);
 
         $repository->flush();
 
