@@ -46,6 +46,10 @@ class PublishStatusController extends Controller
         $activityType->setModuleIdentifier(self::MODULE_IDENTIFIER);
         $publishStatusOperation = new PublishStatusOperationType($this->getDoctrine()->getManager(), $this->get('service_container'));
 
+        $locationService = $this->get('campaignchain.core.location');
+        $location = $locationService->getLocation($location->getId());
+        $publishStatusOperation->setLocation($location);
+
         // Check whether the status will be published on a User or Page stream.
         $facebookLocation = $this->getDoctrine()
             ->getRepository('CampaignChainLocationFacebookBundle:LocationBase')
