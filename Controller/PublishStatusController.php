@@ -362,7 +362,7 @@ class PublishStatusController extends Controller
             $isPublic = false;
         }
 
-        if(!$isPublic){
+        if(!$statusType == 'page' && !$isPublic){
             $this->get('session')->getFlashBag()->add(
                 'warning',
                 'This post is not public.'
