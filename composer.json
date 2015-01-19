@@ -12,10 +12,10 @@
         }
     ],
     "require": {
-        "campaignchain/core": "1.0.0-alpha.4",
-        "campaignchain/location-facebook": "1.0.0-alpha.4",
-        "campaignchain/operation-facebook": "1.0.0-alpha.4",
-        "campaignchain/hook-due": "1.0.0-alpha.4",
+        "campaignchain/core": "dev-master",
+        "campaignchain/location-facebook": "dev-master",
+        "campaignchain/operation-facebook": "dev-master",
+        "campaignchain/hook-due": "dev-master",
         "campaignchain/hook-assignee": "1.0.0-alpha.3"
     },
     "autoload": {
