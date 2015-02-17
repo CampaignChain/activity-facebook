@@ -12,9 +12,9 @@
         }
     ],
     "require": {
-        "campaignchain/core": "dev-1.0.0-beta.1",
-        "campaignchain/location-facebook": "dev-1.0.0-beta.1",
-        "campaignchain/operation-facebook": "dev-1.0.0-beta.1",
+        "campaignchain/core": "1.0.0-beta.1",
+        "campaignchain/location-facebook": "1.0.0-beta.1",
+        "campaignchain/operation-facebook": "1.0.0-beta.1",
         "campaignchain/hook-due": "1.0.0-alpha.4",
         "campaignchain/hook-assignee": "1.0.0-alpha.3"
     },
