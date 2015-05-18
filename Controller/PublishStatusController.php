@@ -293,7 +293,7 @@ class PublishStatusController extends Controller
 
         $data = $request->get('campaignchain_core_activity');
 
-        $responseData['data'] = $data;
+        //$responseData['payload'] = $data;
 
         $activityService = $this->get('campaignchain.core.activity');
         $activity = $activityService->getActivity($id);
@@ -327,6 +327,10 @@ class PublishStatusController extends Controller
 //            // TODO: Add different flashbag which includes link to posted message on Facebook
 //            // TODO: If this previously was a scheduled activity, then reset the schedule
 //        }
+
+        $responseData['start_date'] =
+        $responseData['end_date'] =
+            $activity->getStartDate()->format(\DateTime::ISO8601);
 
         $encoders = array(new JsonEncoder());
         $normalizers = array(new GetSetMethodNormalizer());
