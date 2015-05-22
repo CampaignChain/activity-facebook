@@ -17,10 +17,6 @@ modules:
             edit_api: campaignchain_activity_facebook_publish_status_edit_api
             read: campaignchain_activity_facebook_publish_status_read
         hooks:
-            campaignchain-due: true
-            campaignchain-duration: false
-            campaignchain-budget: false
-            campaignchain-work: false
-            campaignchain-milestone: false
-            campaignchain-log: false
-            campaignchain-assignee: true
+            default:
+                campaignchain-due: true
+                campaignchain-assignee: true
