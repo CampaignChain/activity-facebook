@@ -272,7 +272,7 @@ class PublishStatusController extends Controller
         );
         $activityType->setOperationForms($operationForms);
         $activityType->setCampaign($campaign);
-        $activityType->setView('modal');
+        $activityType->setView('default');
 
         $form = $this->createForm($activityType, $activity);
 
