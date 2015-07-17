@@ -1,7 +1,7 @@
 {
     "name": "campaignchain/activity-facebook",
     "description": "Post a status message on the feed of a channel.",
-    "keywords": ["facebook","status"],
+    "keywords": ["facebook","status","campaignchain"],
     "type": "campaignchain-activity",
     "homepage": "http://www.campaignchain.com",
     "license": "Apache-2.0",
