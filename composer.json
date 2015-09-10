@@ -22,9 +22,6 @@
         "psr-4": { "CampaignChain\\Activity\\FacebookBundle\\": "" }
     },
     "extra": {
-        "branch-alias": {
-            "dev-1.0.0-beta.1": "1.0.0-dev"
-        },
         "campaignchain": {
             "kernel": {
                 "classes": [
