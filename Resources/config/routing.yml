@@ -7,22 +7,22 @@
 
 campaignchain_activity_facebook_publish_status_new:
     pattern:  /activity/facebook/publish-status/new
-    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:new }
+    defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:newAction }
 
 campaignchain_activity_facebook_publish_status_edit:
     pattern:  /activity/facebook/publish-status/{id}/edit
-    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:edit }
+    defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editAction }
 
 campaignchain_activity_facebook_publish_status_edit_modal:
     pattern:  /modal/activity/facebook/publish-status/{id}/edit
-    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editModal }
+    defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editModalAction }
 
 campaignchain_activity_facebook_publish_status_edit_api:
     pattern:  /api/private/activity/facebook/publish-status/byactivity/{id}/edit
-    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:editApi }
+    defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editApiAction }
     options:
         expose: true
 
 campaignchain_activity_facebook_publish_status_read:
     pattern:  /activity/facebook/publish-status/{id}
-    defaults: { _controller: CampaignChainActivityFacebookBundle:PublishStatus:read }
+    defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:readAction }
