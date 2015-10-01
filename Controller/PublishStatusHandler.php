@@ -10,7 +10,8 @@
 
 namespace CampaignChain\Activity\FacebookBundle\Controller;
 
-use CampaignChain\CoreBundle\Controller\Module\ActivityModuleHandlerInterface;
+use CampaignChain\CoreBundle\Controller\Module\AbstractActivityModuleHandler;
+use CampaignChain\CoreBundle\Entity\Activity;
 use CampaignChain\CoreBundle\Entity\Location;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -22,7 +23,7 @@ use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
 use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use CampaignChain\Operation\FacebookBundle\EntityService\Status;
 
-class PublishStatusHandler implements ActivityModuleHandlerInterface
+class PublishStatusHandler extends AbstractActivityModuleHandler
 {
     const DATETIME_FORMAT_TWITTER = 'F j, Y';
 
@@ -75,19 +76,25 @@ class PublishStatusHandler implements ActivityModuleHandlerInterface
         }
     }
 
-    public function processOperationDetail(Operation $operation, $data)
+    public function processOperationDetails(Operation $operation, $data)
     {
-        $status = $this->detailService->getStatusByOperation($operation);
-        $status->setMessage($data['message']);
-        $class = get_class($status);
-        if(strpos($class, 'CampaignChain\Operation\FacebookBundle\Entity\UserStatus') !== false) {
-            $status->setPrivacy($data['privacy']);
+        try {
+            // If the status has already been created, we modify its data.
+            $status = $this->detailService->getStatusByOperation($operation);
+            $status->setMessage($data['message']);
+            $class = get_class($status);
+            if (strpos($class, 'CampaignChain\Operation\FacebookBundle\Entity\UserStatus') !== false) {
+                $status->setPrivacy($data['privacy']);
+            }
+        } catch(\Exception $e) {
+            // Status has not been created yet, so do it from the form data.
+            $status = $data;
         }
 
         return $status;
     }
 
-    public function readOperationDetail(Operation $operation)
+    public function readOperationDetailsAction(Operation $operation)
     {
         $status = $this->detailService->getStatusByOperation($operation);
 

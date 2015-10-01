@@ -7,16 +7,13 @@
 
 parameters:
     campaignchain.activity.facebook.publish_status:
-        activity_bundle_name: "campaignchain/activity-facebook"
-        activity_module_identifier: "campaignchain-facebook-publish-status"
-        operation_bundle_name: "campaignchain/operation-facebook"
-        operation_module_identifier: "campaignchain-facebook-publish-status"
-        location_bundle_name: "campaignchain/location-facebook"
-        location_module_identifier: "campaignchain-facebook-status"
-        handler: "campaignchain.activity.controller.handler.facebook.publish_status"
+        bundle_name: "campaignchain/activity-facebook"
+        module_identifier: "campaignchain-facebook-publish-status"
+        location: %campaignchain.location.facebook.status%
         equals_operation: true
-        operation_forms:
-            - "CampaignChain\\Operation\\FacebookBundle\\Form\\Type\\PublishStatusOperationType"
+        operations:
+            - %campaignchain.operation.facebook.publish_status%
+        controller_handler: "campaignchain.activity.controller.handler.facebook.publish_status"
         operation_job: "campaignchain.job.operation.facebook.publish_status"
 
 services:
