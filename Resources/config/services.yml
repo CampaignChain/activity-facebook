@@ -13,8 +13,7 @@ parameters:
         equals_operation: true
         operations:
             - %campaignchain.operation.facebook.publish_status%
-        controller_handler: "campaignchain.activity.controller.handler.facebook.publish_status"
-        operation_job: "campaignchain.job.operation.facebook.publish_status"
+        handler: "campaignchain.activity.controller.handler.facebook.publish_status"
 
 services:
     campaignchain.activity.facebook.form.type.publish_status:
@@ -30,5 +29,6 @@ services:
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@campaignchain.operation.facebook.status"
+            - "@campaignchain.job.operation.facebook.publish_status"
             - "@session"
             - "@templating"
