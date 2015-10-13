@@ -6,8 +6,29 @@
 # file that was distributed with this source code.
 
 parameters:
+    campaignchain.activity.facebook.publish_status:
+        bundle_name: "campaignchain/activity-facebook"
+        module_identifier: "campaignchain-facebook-publish-status"
+        location: %campaignchain.location.facebook.status%
+        equals_operation: true
+        operations:
+            - %campaignchain.operation.facebook.publish_status%
+        handler: "campaignchain.activity.controller.handler.facebook.publish_status"
 
 services:
     campaignchain.activity.facebook.form.type.publish_status:
         class: CampaignChain\Activity\FacebookBundle\Form\Type\PublishStatusActivityType
         arguments: [ @doctrine.orm.entity_manager, @service_container ]
+    campaignchain.activity.controller.facebook.publish_status:
+        class: CampaignChain\CoreBundle\Controller\Module\ActivityModuleController
+        calls:
+            - [setContainer, ["@service_container"]]
+            - [setParameters, ["%campaignchain.activity.facebook.publish_status%"]]
+    campaignchain.activity.controller.handler.facebook.publish_status:
+        class: CampaignChain\Activity\FacebookBundle\Controller\PublishStatusHandler
+        arguments:
+            - "@doctrine.orm.entity_manager"
+            - "@campaignchain.operation.facebook.status"
+            - "@campaignchain.job.operation.facebook.publish_status"
+            - "@session"
+            - "@templating"
