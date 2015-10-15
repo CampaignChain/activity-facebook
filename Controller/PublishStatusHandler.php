@@ -13,6 +13,7 @@ namespace CampaignChain\Activity\FacebookBundle\Controller;
 use CampaignChain\CoreBundle\Controller\Module\AbstractActivityHandler;
 use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
+use CampaignChain\CoreBundle\Entity\Campaign;
 use CampaignChain\Operation\FacebookBundle\Job\PublishStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
@@ -49,7 +50,7 @@ class PublishStatusHandler extends AbstractActivityHandler
         $this->templating = $templating;
     }
 
-    public function createContent(Location $location)
+    public function createContent(Location $location, Campaign $campaign)
     {
         // Check whether the status will be published on a User or Page stream.
         $facebookLocation = $this->em
