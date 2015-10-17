@@ -16,9 +16,6 @@ parameters:
         handler: "campaignchain.activity.controller.handler.facebook.publish_status"
 
 services:
-    campaignchain.activity.facebook.form.type.publish_status:
-        class: CampaignChain\Activity\FacebookBundle\Form\Type\PublishStatusActivityType
-        arguments: [ @doctrine.orm.entity_manager, @service_container ]
     campaignchain.activity.controller.facebook.publish_status:
         class: CampaignChain\CoreBundle\Controller\Module\ActivityModuleController
         calls:
