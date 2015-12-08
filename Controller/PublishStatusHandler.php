@@ -80,12 +80,16 @@ class PublishStatusHandler extends AbstractActivityHandler
     public function processContent(Operation $operation, $data)
     {
         try {
-            // If the status has already been created, we modify its data.
-            $status = $this->contentService->getStatusByOperation($operation);
-            $status->setMessage($data['message']);
-            $class = get_class($status);
-            if (strpos($class, 'CampaignChain\Operation\FacebookBundle\Entity\UserStatus') !== false) {
-                $status->setPrivacy($data['privacy']);
+            if(is_array($data)) {
+                // If the status has already been created, we modify its data.
+                $status = $this->contentService->getStatusByOperation($operation);
+                $status->setMessage($data['message']);
+                $class = get_class($status);
+                if (strpos($class, 'CampaignChain\Operation\FacebookBundle\Entity\UserStatus') !== false) {
+                    $status->setPrivacy($data['privacy']);
+                }
+            } else {
+                $status = $data;
             }
         } catch(\Exception $e) {
             // Status has not been created yet, so do it from the form data.
