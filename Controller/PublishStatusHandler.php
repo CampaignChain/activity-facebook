@@ -50,7 +50,7 @@ class PublishStatusHandler extends AbstractActivityHandler
         $this->templating = $templating;
     }
 
-    public function createContent(Location $location, Campaign $campaign)
+    public function createContent(Location $location = null, Campaign $campaign = null)
     {
         // Check whether the status will be published on a User or Page stream.
         $facebookLocation = $this->em
