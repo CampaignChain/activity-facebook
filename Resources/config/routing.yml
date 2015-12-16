@@ -26,3 +26,8 @@ campaignchain_activity_facebook_publish_status_edit_api:
 campaignchain_activity_facebook_publish_status_read:
     pattern:  /activity/facebook/publish-status/{id}
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:readAction }
+
+# REST routes are being created automatically via FOSRestBundle.
+campaignchain_activity_facebook_rest:
+    resource: "@CampaignChainActivityFacebookBundle/Resources/config/routing_rest.yml"
+    prefix: /api/v1/p/campaignchain/activity-facebook
