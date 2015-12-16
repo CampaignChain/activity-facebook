@@ -117,7 +117,7 @@ class ActivityController extends BaseModuleController
             "name":"My Facebook status",
             "location":98,
             "campaign":1,
-            "campaignchain-facebook-publish-status":{
+            "campaignchain_facebook_publish_status":{
                 "message":"Some test status message"
             },
             "campaignchain_hook_campaignchain_due":{
