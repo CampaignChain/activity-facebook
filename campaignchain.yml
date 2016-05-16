@@ -20,3 +20,4 @@ modules:
             default:
                 campaignchain-due: true
                 campaignchain-assignee: true
+                campaignchain-image: true
