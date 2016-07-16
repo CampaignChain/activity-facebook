@@ -17,8 +17,13 @@
 
 namespace CampaignChain\Activity\FacebookBundle;
 
+use CampaignChain\Activity\FacebookBundle\DependencyInjection\CampaignChainActivityFacebookExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CampaignChainActivityFacebookBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new CampaignChainActivityFacebookExtension();
+    }
 }
