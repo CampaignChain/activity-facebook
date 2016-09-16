@@ -23,6 +23,8 @@ modules:
             edit_modal: campaignchain_activity_facebook_publish_status_edit_modal
             edit_api: campaignchain_activity_facebook_publish_status_edit_api
             read: campaignchain_activity_facebook_publish_status_read
+        services:
+            handler: campaignchain.activity.controller.handler.facebook.publish_status
         hooks:
             default:
                 campaignchain-due: true
