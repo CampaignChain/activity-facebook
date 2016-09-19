@@ -36,3 +36,4 @@ services:
             - "@campaignchain.job.operation.facebook.publish_status"
             - "@session"
             - "@templating"
+            - "@campaignchain.channel.facebook.rest.client"

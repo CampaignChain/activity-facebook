@@ -17,20 +17,24 @@
 
 namespace CampaignChain\Activity\FacebookBundle\Controller;
 
+use CampaignChain\Channel\FacebookBundle\REST\FacebookClient;
 use CampaignChain\CoreBundle\Controller\Module\AbstractActivityHandler;
+use CampaignChain\Location\FacebookBundle\Entity\LocationBase;
+use CampaignChain\Operation\FacebookBundle\Entity\StatusBase;
 use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
 use CampaignChain\CoreBundle\Entity\Campaign;
 use CampaignChain\Operation\FacebookBundle\Job\PublishStatus;
 use Doctrine\ORM\EntityManager;
 use Symfony\Bundle\TwigBundle\TwigEngine;
-use Symfony\Component\HttpFoundation\Session\Session;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Location\FacebookBundle\Entity\Page;
 use CampaignChain\Location\FacebookBundle\Entity\User;
 use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
 use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use CampaignChain\Operation\FacebookBundle\EntityService\Status;
+use CampaignChain\CoreBundle\Util\ParserUtil;
+use CampaignChain\CoreBundle\Exception\ExternalApiException;
 
 class PublishStatusHandler extends AbstractActivityHandler
 {
@@ -41,13 +45,15 @@ class PublishStatusHandler extends AbstractActivityHandler
     protected $job;
     protected $session;
     protected $templating;
+    protected $restClient;
 
     public function __construct(
         EntityManager $em,
         Status $contentService,
         PublishStatus $job,
         $session,
-        TwigEngine $templating
+        TwigEngine $templating,
+        FacebookClient $restClient
     )
     {
         $this->em = $em;
@@ -55,6 +61,7 @@ class PublishStatusHandler extends AbstractActivityHandler
         $this->job = $job;
         $this->session = $session;
         $this->templating = $templating;
+        $this->restClient = $restClient;
     }
 
     public function createContent(Location $location = null, Campaign $campaign = null)
@@ -170,5 +177,111 @@ class PublishStatusHandler extends AbstractActivityHandler
         }
 
         return false;
+    }
+
+    /**
+     * Should the content be checked whether it can be executed?
+     *
+     * @param $content
+     * @return bool
+     */
+    public function checkExecutable($content)
+    {
+        return empty(ParserUtil::extractURLsFromText($content->getMessage()));
+    }
+
+    /**
+     * Get the latest post and see if it's message is identical with the new one
+     * to avoid duplicate message error.
+     *
+     * For now, this is a simplified implementation, not taking into account
+     * the subtleties described below.
+     *
+     * Here's what defines a duplicate message in Facebook:
+     *
+     * A message is only a duplicate if it is identical with the latest post. If
+     * a new post is identical with posts other than the latest, then it is not
+     * a duplicate.
+     *
+     * If the message contains at least one URL, then we're fine, because
+     * we will create a unique shortened URL for each time the Facebook status
+     * will be posted.
+     *
+     * Note that Facebook allows to post identical content consecutively if it
+     * includes shortened URLs (tested with Bit.ly). These shortened URLs can be
+     * kept the same for each duplicate.
+     *
+     * If the post contains a photo, the duplicate checks won't be applied by
+     * Facebook.
+     *
+     * @param object $content
+     * @return array
+     */
+    public function isExecutableInChannel($content)
+    {
+        /*
+         * If message contains no links, find out whether it has been posted before.
+         */
+        if($this->checkExecutable($content)){
+            // Connect to Facebook REST API
+            $connection = $this->restClient->connectByActivity(
+                $content->getOperation()->getActivity()
+            );
+
+            $params['limit'] = '1';
+
+            try {
+                $response = $connection->api('/'.$content->getFacebookLocation()->getIdentifier().'/feed', 'GET', $params);
+                $connection->destroySession();
+            } catch (\Exception $e) {
+                throw new ExternalApiException($e->getMessage(), $e->getCode(), $e);
+            }
+
+            if(
+                isset($response['data']) &&
+                isset($response['data'][0]) &&
+                $response['data'][0]['message'] == $content->getMessage()
+            ) {
+                return array(
+                    'status' => false,
+                    'message' =>
+                        'Same message has already been posted as the latest one on Facebook: '
+                        .'<a href="https://www.facebook.com/'.$response['data'][0]['id'].'">'
+                        .'https://www.facebook.com/'.$response['data'][0]['id']
+                        .'</a>'
+                );
+            }
+
+        }
+
+        return array(
+            'status' => true,
+        );
+    }
+
+    public function isExecutableInCampaign($content)
+    {
+        /** @var Campaign $campaign */
+        $campaign = $content->getOperation()->getActivity()->getCampaign();
+
+        if($campaign->getInterval()){
+            $campaignIntervalDate = new \DateTime();
+            $campaignIntervalDate->modify($campaign->getInterval());
+            $maxDuplicateIntervalDate = new \DateTime();
+            $maxDuplicateIntervalDate->modify($this->maxDuplicateInterval);
+
+            if($maxDuplicateIntervalDate > $campaignIntervalDate){
+                return array(
+                    'status' => false,
+                    'message' =>
+                        'The campaign interval must be more than '
+                        .ltrim($this->maxDuplicateInterval, '+').' '
+                        .'to avoid a '
+                        .'<a href="https://twittercommunity.com/t/duplicate-tweets/13264">duplicate Tweet error</a>.'
+                );
+            }
+        }
+
+        return parent::isExecutableInCampaign($content);
     }
 }
