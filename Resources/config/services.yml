@@ -43,4 +43,6 @@ services:
         arguments:
             - "@doctrine.orm.entity_manager"
             - "@campaignchain.channel.facebook.rest.client"
+            - "%campaignchain_channel_facebook.max_duplicate_interval%"
             - "@campaignchain.core.util.scheduler"
+            - "@router"

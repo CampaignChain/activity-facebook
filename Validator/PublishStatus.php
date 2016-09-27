@@ -18,26 +18,36 @@
 namespace CampaignChain\Activity\FacebookBundle\Validator;
 
 use CampaignChain\Channel\FacebookBundle\REST\FacebookClient;
+use CampaignChain\CoreBundle\Entity\Activity;
 use CampaignChain\CoreBundle\Util\ParserUtil;
 use CampaignChain\CoreBundle\Exception\ExternalApiException;
 use CampaignChain\CoreBundle\Util\SchedulerUtil;
 use CampaignChain\CoreBundle\Validator\AbstractActivityValidator;
+use CampaignChain\Operation\FacebookBundle\Entity\StatusBase;
 use Doctrine\ORM\EntityManager;
+use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class PublishStatus extends AbstractActivityValidator
 {
     protected $em;
     protected $restClient;
+    protected $maxDuplicateInterval;
     protected $schedulerUtil;
+    protected $router;
 
     public function __construct(
-        EntityManager $em, FacebookClient $restClient,
-        SchedulerUtil $schedulerUtil
+        EntityManager $em,
+        FacebookClient $restClient,
+        $maxDuplicateInterval,
+        SchedulerUtil $schedulerUtil,
+        Router $router
     )
     {
         $this->em = $em;
         $this->restClient = $restClient;
+        $this->maxDuplicateInterval = $maxDuplicateInterval;
         $this->schedulerUtil = $schedulerUtil;
+        $this->router = $router;
     }
 
     /**
@@ -47,14 +57,18 @@ class PublishStatus extends AbstractActivityValidator
      * @param \DateTime $startDate
      * @return bool
      */
-    public function checkExecutable($content, \DateTime $startDate)
+    public function mustValidate($content, \DateTime $startDate)
     {
         return empty(ParserUtil::extractURLsFromText($content->getMessage()));
     }
 
     /**
-     * Get the latest post and see if it's message is identical with the new one
-     * to avoid duplicate message error.
+     * If the Activity is supposed to be executed now, we check whether there's
+     * an identical post within the past 24 hours.
+     *
+     * If it is a scheduled Activity, we check whether the are Activities
+     * scheduled in the same Facebook Location within 24 hours prior or after
+     * the new scheduled Activity contain the same text.
      *
      * For now, this is a simplified implementation, not taking into account
      * the subtleties described below.
@@ -76,7 +90,7 @@ class PublishStatus extends AbstractActivityValidator
      * If the post contains a photo, the duplicate checks won't be applied by
      * Facebook.
      *
-     * @param object $content
+     * @param StatusBase $content
      * @param \DateTime $startDate
      * @return array
      */
@@ -85,7 +99,8 @@ class PublishStatus extends AbstractActivityValidator
         /*
          * If message contains no links, find out whether it has been posted before.
          */
-        if($this->checkExecutable($content, $startDate)){
+        if($this->mustValidate($content, $startDate)){
+            // Is the Activity supposed to be executed now?
             if($this->schedulerUtil->isDueNow($startDate)) {
                 // Connect to Facebook REST API
                 $connection = $this->restClient->connectByActivity(
@@ -113,34 +128,71 @@ class PublishStatus extends AbstractActivityValidator
                             'Same message has already been posted as the latest one on Facebook: '
                             . '<a href="https://www.facebook.com/' . $response['data'][0]['id'] . '">'
                             . 'https://www.facebook.com/' . $response['data'][0]['id']
-                            . '</a>'
+                            . '</a>. '
+                            . 'Either change the message or leave at least '
+                            . $this->maxDuplicateInterval.' between yours and the other post.'
                     );
                 }
             } else {
-//                // Check if post with same content is scheduled for same Location.
-//                $qb = $this->em->createQueryBuilder();
-//                $qb->select('s')
-//                    ->from('CampaignChain\Operation\FacebookBundle\Entity\StatusBase', 's')
-//                    ->where('s.status != :status')
-//                    ->andWhere('c.parent IS NULL')
-//                    ->andWhere(
-//                        '(c.startDate > :relative_start_date AND c.interval IS NULL)'
-//                        .'OR '
-//                        .'(c.startDate = :relative_start_date AND c.interval IS NOT NULL)'
-//                    )
-//                    ->setParameter('status', Action::STATUS_CLOSED)
-//                    ->setParameter('relative_start_date', new \DateTime(Campaign::RELATIVE_START_DATE));
-//
-//                $qb->orderBy('c.startDate', 'DESC');
-//
-//                $query = $qb->getQuery();
-//                $campaigns = $query->getResult();
-            }
+                // Check if post with same content is scheduled for same Location.
+                $newActivity = clone $content->getOperation()->getActivity();
+                $newActivity->setStartDate($startDate);
 
+                $closestActivities = array();
+
+                $closestActivities[] = $this->em->getRepository('CampaignChainCoreBundle:Activity')
+                    ->getClosestScheduledActivity($newActivity, '-'.$this->maxDuplicateInterval);
+                $closestActivities[] = $this->em->getRepository('CampaignChainCoreBundle:Activity')
+                    ->getClosestScheduledActivity($newActivity, '+'.$this->maxDuplicateInterval);
+
+                foreach($closestActivities as $closestActivity) {
+                    if ($closestActivity) {
+                        $isUniqueContent = $this->isUniqueContent($closestActivity, $content);
+                        if ($isUniqueContent['status'] == false) {
+                            return $isUniqueContent;
+                        }
+                    }
+                }
+            }
         }
 
         return array(
             'status' => true,
         );
+    }
+
+    /**
+     * Compares the status message of an already scheduled Activity with the
+     * content of a new/edited Activity.
+     *
+     * @param Activity $existingActivity
+     * @param StatusBase $content
+     * @return array
+     */
+    protected function isUniqueContent(Activity $existingActivity, StatusBase $content)
+    {
+        /** @var StatusBase $existingStatus */
+        $existingStatus =
+            $this->em->getRepository('CampaignChainOperationFacebookBundle:StatusBase')
+                ->findOneByOperation($existingActivity->getOperations()[0]);
+
+        if($existingStatus->getMessage() == $content->getMessage()){
+            return array(
+                'status' => false,
+                'message' =>
+                    'Same status message has already been scheduled: '
+                    . '<a href="' . $this->router->generate('campaignchain_activity_facebook_publish_status_edit', array(
+                        'id' => $existingActivity->getId()
+                    )) . '">'
+                    . $existingActivity->getName()
+                    . '</a>. '
+                    . 'Either change the message or leave at least '
+                    . $this->maxDuplicateInterval.' between yours and the other post.'
+            );
+        } else {
+            return array(
+                'status' => true
+            );
+        }
     }
 }
