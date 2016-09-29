@@ -195,4 +195,20 @@ class PublishStatus extends AbstractActivityValidator
             );
         }
     }
+
+    /**
+     * @param $content
+     * @param \DateTime $startDate
+     * @return array
+     */
+    public function isExecutableInCampaign($content, \DateTime $startDate)
+    {
+        $errMsg = 'The campaign interval must be more than '
+            .$this->maxDuplicateInterval.' '
+            .'to avoid a duplicate Facebook status message error.';
+
+        return $this->isExecutableInCampaignByInterval(
+            $content, $startDate, '+'.$this->maxDuplicateInterval, $errMsg
+        );
+    }
 }
