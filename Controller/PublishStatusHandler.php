@@ -30,7 +30,7 @@ use CampaignChain\Location\FacebookBundle\Entity\User;
 use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
 use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use CampaignChain\Operation\FacebookBundle\EntityService\Status;
-use CampaignChain\Activity\FacebookBundle\Validator\PublishStatus as Validator;
+use CampaignChain\Operation\FacebookBundle\Validator\PublishStatus as Validator;
 
 class PublishStatusHandler extends AbstractActivityHandler
 {
@@ -163,7 +163,7 @@ class PublishStatusHandler extends AbstractActivityHandler
     {
         if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
             // Validate whether we can execute the Activity?
-            $isExecutable = $this->validator->isExecutableInChannel(
+            $isExecutable = $this->validator->isExecutableByChannel(
                 $this->contentService->getContent($operation), new \DateTime()
             );
             if(!$isExecutable['status']) {

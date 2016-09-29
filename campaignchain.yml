@@ -23,8 +23,6 @@ modules:
             edit_modal: campaignchain_activity_facebook_publish_status_edit_modal
             edit_api: campaignchain_activity_facebook_publish_status_edit_api
             read: campaignchain_activity_facebook_publish_status_read
-        services:
-            validator: campaignchain.activity.validator.facebook.publish_status
         hooks:
             default:
                 campaignchain-due: true

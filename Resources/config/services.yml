@@ -21,7 +21,6 @@ parameters:
         operations:
             - %campaignchain.operation.facebook.publish_status%
         handler: "campaignchain.activity.controller.handler.facebook.publish_status"
-        validator: "campaignchain.activity.validator.facebook.publish_status"
 
 services:
     campaignchain.activity.controller.facebook.publish_status:
@@ -37,12 +36,4 @@ services:
             - "@campaignchain.job.operation.facebook.publish_status"
             - "@session"
             - "@templating"
-            - "@campaignchain.activity.validator.facebook.publish_status"
-    campaignchain.activity.validator.facebook.publish_status:
-        class: CampaignChain\Activity\FacebookBundle\Validator\PublishStatus
-        arguments:
-            - "@doctrine.orm.entity_manager"
-            - "@campaignchain.channel.facebook.rest.client"
-            - "%campaignchain_channel_facebook.max_duplicate_interval%"
-            - "@campaignchain.core.util.scheduler"
-            - "@router"
+            - "@campaignchain.validator.operation.facebook.publish_status"
