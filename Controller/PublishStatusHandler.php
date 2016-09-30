@@ -163,7 +163,7 @@ class PublishStatusHandler extends AbstractActivityHandler
     {
         if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
             // Validate whether we can execute the Activity?
-            $isExecutable = $this->validator->isExecutableByChannel(
+            $isExecutable = $this->validator->isExecutableByLocation(
                 $this->contentService->getContent($operation), new \DateTime()
             );
             if(!$isExecutable['status']) {
