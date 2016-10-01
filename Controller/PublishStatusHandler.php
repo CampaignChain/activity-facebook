@@ -30,7 +30,7 @@ use CampaignChain\Location\FacebookBundle\Entity\User;
 use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
 use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use CampaignChain\Operation\FacebookBundle\EntityService\Status;
-use CampaignChain\Operation\FacebookBundle\Validator\PublishStatus as Validator;
+use CampaignChain\Operation\FacebookBundle\Validator\PublishStatusValidator as Validator;
 
 class PublishStatusHandler extends AbstractActivityHandler
 {
