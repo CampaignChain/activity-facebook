@@ -35,6 +35,12 @@ campaignchain_activity_facebook_publish_status_read:
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:readAction }
 
 # REST routes are being created automatically via FOSRestBundle.
-campaignchain_activity_facebook_rest:
+campaignchain_activity_facebook_rest_public:
     resource: "@CampaignChainActivityFacebookBundle/Resources/config/routing_rest.yml"
     prefix: /api/v1/p/campaignchain/activity-facebook
+
+# We clone the public REST API for the private to make it accessible to the Web app
+campaignchain_activity_facebook_rest_private_public:
+    resource: "@CampaignChainActivityFacebookBundle/Resources/config/routing_rest.yml"
+    type: campaignchain-clone/api_private_
+    prefix: /api/private/p/campaignchain/activity-facebook
