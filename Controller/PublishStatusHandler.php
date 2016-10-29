@@ -22,7 +22,7 @@ use Symfony\Component\Form\Form;
 use CampaignChain\CoreBundle\Entity\Location;
 use CampaignChain\CoreBundle\Entity\Campaign;
 use CampaignChain\Operation\FacebookBundle\Job\PublishStatus;
-use Doctrine\ORM\EntityManager;
+use Doctrine\Common\Persistence\ManagerRegistry;
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use CampaignChain\CoreBundle\Entity\Operation;
 use CampaignChain\Location\FacebookBundle\Entity\Page;
@@ -44,7 +44,7 @@ class PublishStatusHandler extends AbstractActivityHandler
     protected $validator;
 
     public function __construct(
-        EntityManager $em,
+        ManagerRegistry $managerRegistry,
         Status $contentService,
         PublishStatus $job,
         $session,
@@ -52,7 +52,7 @@ class PublishStatusHandler extends AbstractActivityHandler
         Validator $validator
     )
     {
-        $this->em = $em;
+        $this->em = $managerRegistry->getManager();
         $this->contentService = $contentService;
         $this->job = $job;
         $this->session = $session;

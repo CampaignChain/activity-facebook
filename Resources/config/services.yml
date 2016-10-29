@@ -31,7 +31,7 @@ services:
     campaignchain.activity.controller.handler.facebook.publish_status:
         class: CampaignChain\Activity\FacebookBundle\Controller\PublishStatusHandler
         arguments:
-            - "@doctrine.orm.entity_manager"
+            - "@doctrine"
             - "@campaignchain.operation.facebook.status"
             - "@campaignchain.job.operation.facebook.publish_status"
             - "@session"
