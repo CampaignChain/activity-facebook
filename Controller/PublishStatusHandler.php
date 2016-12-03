@@ -127,7 +127,13 @@ class PublishStatusHandler extends AbstractActivityHandler
         $this->publishNow($operation);
     }
 
-    public function readAction(Operation $operation)
+    /**
+     * @param Operation $operation
+     * @param bool $isModal Modal view yes or no?
+     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \Exception
+     */
+    public function readAction(Operation $operation, $isModal = false)
     {
         $status = $this->contentService->getStatusByOperation($operation);
 
@@ -154,8 +160,14 @@ class PublishStatusHandler extends AbstractActivityHandler
             );
         }
 
+        if(!$isModal){
+            $twigTpl = 'CampaignChainOperationFacebookBundle::read.html.twig';
+        } else {
+            $twigTpl = 'CampaignChainOperationFacebookBundle::read_modal.html.twig';
+        }
+
         return $this->templating->renderResponse(
-            'CampaignChainOperationFacebookBundle::read.html.twig',
+            $twigTpl,
             array(
                 'page_title' => $operation->getActivity()->getName(),
                 'is_public' => $isPublic,
