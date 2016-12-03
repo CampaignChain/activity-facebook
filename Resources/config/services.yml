@@ -37,3 +37,4 @@ services:
             - "@session"
             - "@templating"
             - "@campaignchain.validator.operation.facebook.publish_status"
+            - "@campaignchain.core.util.scheduler"

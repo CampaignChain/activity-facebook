@@ -31,6 +31,7 @@ use CampaignChain\Operation\FacebookBundle\Entity\PageStatus;
 use CampaignChain\Operation\FacebookBundle\Entity\UserStatus;
 use CampaignChain\Operation\FacebookBundle\EntityService\Status;
 use CampaignChain\Operation\FacebookBundle\Validator\PublishStatusValidator as Validator;
+use CampaignChain\CoreBundle\Util\SchedulerUtil;
 
 class PublishStatusHandler extends AbstractActivityHandler
 {
@@ -43,13 +44,17 @@ class PublishStatusHandler extends AbstractActivityHandler
     protected $templating;
     protected $validator;
 
+    /** @var SchedulerUtil */
+    protected $schedulerUtil;
+
     public function __construct(
         ManagerRegistry $managerRegistry,
         Status $contentService,
         PublishStatus $job,
         $session,
         TwigEngine $templating,
-        Validator $validator
+        Validator $validator,
+        SchedulerUtil $schedulerUtil
     )
     {
         $this->em = $managerRegistry->getManager();
@@ -58,6 +63,7 @@ class PublishStatusHandler extends AbstractActivityHandler
         $this->session = $session;
         $this->templating = $templating;
         $this->validator = $validator;
+        $this->schedulerUtil = $schedulerUtil;
     }
 
     public function createContent(Location $location = null, Campaign $campaign = null)
@@ -109,16 +115,16 @@ class PublishStatusHandler extends AbstractActivityHandler
         return $status;
     }
 
-    public function postPersistNewEvent(Operation $operation, Form $form, $content = null)
+    public function postPersistNewEvent(Operation $operation, $content = null)
     {
         // Content to be published immediately?
-        $this->publishNow($operation, $form);
+        $this->publishNow($operation);
     }
 
-    public function postPersistEditEvent(Operation $operation, Form $form, $content = null)
+    public function postPersistEditEvent(Operation $operation, $content = null)
     {
         // Content to be published immediately?
-        $this->publishNow($operation, $form);
+        $this->publishNow($operation);
     }
 
     public function readAction(Operation $operation)
@@ -159,9 +165,9 @@ class PublishStatusHandler extends AbstractActivityHandler
             ));
     }
 
-    private function publishNow(Operation $operation, Form $form)
+    private function publishNow(Operation $operation)
     {
-        if ($form->get('campaignchain_hook_campaignchain_due')->has('execution_choice') && $form->get('campaignchain_hook_campaignchain_due')->get('execution_choice')->getData() == 'now') {
+        if ($this->schedulerUtil->isDueNow($operation->getStartDate())) {
             // Validate whether we can execute the Activity?
             $isExecutable = $this->validator->isExecutableByLocation(
                 $this->contentService->getContent($operation), new \DateTime()
