@@ -19,7 +19,7 @@
     "require": {
         "campaignchain/core": "dev-master",
         "campaignchain/location-facebook": "dev-master",
-        "campaignchain/operation-facebook": "dev-master",
+        "campaignchain/operation-facebook": "dev-campaignchain-407",
         "campaignchain/hook-due": "dev-master",
         "campaignchain/hook-assignee": "dev-master",
         "campaignchain/hook-image": "dev-master"
