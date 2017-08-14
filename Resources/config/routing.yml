@@ -13,29 +13,29 @@
 # limitations under the License.
 
 campaignchain_activity_facebook_publish_status_new:
-    pattern:  /activity/facebook/publish-status/new
+    path:  /activity/facebook/publish-status/new
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:newAction }
 
 campaignchain_activity_facebook_publish_status_edit:
-    pattern:  /activity/facebook/publish-status/{id}/edit
+    path:  /activity/facebook/publish-status/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editAction }
 
 campaignchain_activity_facebook_publish_status_edit_modal:
-    pattern:  /modal/activity/facebook/publish-status/{id}/edit
+    path:  /modal/activity/facebook/publish-status/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editModalAction }
 
 campaignchain_activity_facebook_publish_status_edit_api:
-    pattern:  /api/private/activity/facebook/publish-status/byactivity/{id}/edit
+    path:  /api/private/activity/facebook/publish-status/byactivity/{id}/edit
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:editApiAction }
     options:
         expose: true
 
 campaignchain_activity_facebook_publish_status_read:
-    pattern:  /activity/facebook/publish-status/{id}
+    path:  /activity/facebook/publish-status/{id}
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:readAction }
 
 campaignchain_activity_facebook_publish_status_read_modal:
-    pattern:  /modal/activity/facebook/publish-status/{id}
+    path:  /modal/activity/facebook/publish-status/{id}
     defaults: { _controller: campaignchain.activity.controller.facebook.publish_status:readModalAction }
     options:
         expose: true
